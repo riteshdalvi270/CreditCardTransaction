@@ -1,0 +1,3 @@
+{"creditNumber":"4111111111111111","firstName":"Tom","amount":"$500","limit":"$1000"}
+{"creditNumber":"5454545454545454","firstName":"Lisa","amount":"$-113","limit":"$3000"}
+{"creditNumber":"1234567890123456","firstName":"Quincy","error":"error"}
