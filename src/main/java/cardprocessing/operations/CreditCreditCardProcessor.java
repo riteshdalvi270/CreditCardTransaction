@@ -11,19 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Processor to credit the credit card with the amount after the transaction is done.
  * @author Ritesh Dalvi
  **/
 
-class DecreaseCreditCardProcessor implements Operations {
+public class CreditCreditCardProcessor implements Operation {
 
-    final Gson gson = new Gson();
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void process(final String[] contents) {
+    public void operate(final String[] contents) {
 
-        final CreditCardInformation creditCardInformation = new CreditCardInformation();
-        creditCardInformation.setFirstName(contents[1]);
-        creditCardInformation.setAmount(contents[2]);
+        final CreditCardInformation creditCardInformation = CreditCardInformation.Builder.create().withFirstName(contents[1]).withAmount(contents[2]).build();
 
         final DataReader dataReader = DataReader.create();
 
@@ -45,23 +45,30 @@ class DecreaseCreditCardProcessor implements Operations {
             e.printStackTrace();
         }
 
+        final Gson gson = new Gson();
+
         for(CreditCardInformation creditInfo : creditCardInformations) {
 
+            final CreditCardInformation.Builder newCreditCardInformationBuilder = CreditCardInformation.Builder.create(creditInfo);
+
             final String firstName = creditInfo.getFirstName();
+            final String amount = creditInfo.getAmount();
+            final String error = creditInfo.getError();
 
             if(creditCardInformation.getFirstName().equals(firstName)) {
 
-                if(creditInfo.getError()==null) {
-                    final String amount = creditInfo.getAmount();
+                if(error==null) {
+
                     Integer amountValue = Integer.valueOf(amount.substring(1));
                     final Integer amountToBeCredited = Integer.valueOf(creditCardInformation.getAmount().substring(1));
                     amountValue = amountValue - amountToBeCredited;
-                    creditInfo.setAmount(String.valueOf("$" + amountValue));
+                    newCreditCardInformationBuilder.withAmount(String.valueOf("$" + amountValue));
                 }
 
             }
+
             try {
-                dataWriter.addToFile(gson.toJson(creditInfo));
+                dataWriter.writeToStorage(gson.toJson(newCreditCardInformationBuilder));
             } catch (IOException e) {
                 e.printStackTrace();
             }

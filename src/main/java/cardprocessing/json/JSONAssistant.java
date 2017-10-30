@@ -10,23 +10,23 @@ import org.codehaus.jettison.json.JSONObject;
 public class JSONAssistant {
 
     /**
-     * Retrieves the latitude information from the Json Object.
+     * Retrieves the credit card number from the Json Object.
      * @param jsonObject The {@link JSONObject} (cannot be null).
-     * @param latitude The key to be used to retrieve from the {@link JSONObject} (cannot be null,empty or blank).
-     * @return non-null {@link String} representing the latitude.
+     * @param creditCardNumber The key to be used to retrieve from the {@link JSONObject} (cannot be null,empty or blank).
+     * @return non-null {@link String} representing the credit card number.
      */
-    public static String getCreditCardNumber(final JSONObject jsonObject, final String latitude) {
-        return getSafeJSONObject(jsonObject,latitude);
+    public static String getCreditCardNumber(final JSONObject jsonObject, final String creditCardNumber) {
+        return getSafeJSONObject(jsonObject,creditCardNumber);
     }
 
     /**
-     * Retrieves the user id information from the Json Object.
+     * Retrieves the amount of the credit card from the Json Object.
      * @param jsonObject The {@link JSONObject} (cannot be null).
-     * @param userId The key to be used to retrieve from the {@link JSONObject} (cannot be null,empty or blank).
-     * @return non-null {@link String} representing the user id.
+     * @param amount The key to be used to retrieve from the {@link JSONObject} (cannot be null,empty or blank).
+     * @return non-null {@link String} representing the amount on the credit card.
      */
-    public static String getAmount(final JSONObject jsonObject, final String userId) {
-        return getSafeJSONObject(jsonObject,userId);
+    public static String getAmount(final JSONObject jsonObject, final String amount) {
+        return getSafeJSONObject(jsonObject,amount);
     }
 
     /**
@@ -40,17 +40,23 @@ public class JSONAssistant {
     }
 
     /**
-     * Retrieves the longitude information from the Json Object.
+     * Retrieves the limit on the credit card from the Json Object.
      * @param jsonObject The {@link JSONObject} (cannot be null).
-     * @param longitude The key to be used to retrieve from the {@link JSONObject} (cannot be null,empty or blank).
-     * @return non-null {@link String} representing the longitude.
+     * @param limit The key to be used to retrieve from the {@link JSONObject} (cannot be null,empty or blank).
+     * @return non-null {@link String} representing the limit on the credit card.
      */
-    public static String getLimit(final JSONObject jsonObject, final String longitude) {
-        return getSafeJSONObject(jsonObject,longitude);
+    public static String getLimit(final JSONObject jsonObject, final String limit) {
+        return getSafeJSONObject(jsonObject,limit);
     }
 
-    public static String getError(final JSONObject jsonObject, final String longitude) {
-        return getSafeJSONObject(jsonObject,longitude);
+    /**
+     * Retrieves the error for invalid credit card from the Json Object.
+     * @param jsonObject The {@link JSONObject} (cannot be null).
+     * @param error The key to be used to retrieve from the {@link JSONObject} (cannot be null,empty or blank).
+     * @return non-null {@link String} representing the error for invalid credit card.
+     */
+    public static String getError(final JSONObject jsonObject, final String error) {
+        return getSafeJSONObject(jsonObject,error);
     }
 
     /**

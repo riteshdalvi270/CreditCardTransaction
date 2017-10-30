@@ -11,19 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Processor to charge the credit card with the amount after the transaction is done.
  * @author Ritesh Dalvi
  **/
 
-class ChargeCreditCardProcessor implements Operations {
+public class ChargeCreditCardProcessor implements Operation {
 
-    final Gson gson = new Gson();
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void process(final String[] contents) {
+    public void operate(final String[] contents) {
 
-        final CreditCardInformation creditCardInformation =  new CreditCardInformation();
-        creditCardInformation.setFirstName(contents[1]);
-        creditCardInformation.setAmount(contents[2]);
+        final CreditCardInformation creditCardInformationToBeCompared =  CreditCardInformation.Builder.create().withFirstName(contents[1]).withAmount(contents[2]).build();
 
         final DataReader dataReader = DataReader.create();
 
@@ -45,29 +45,35 @@ class ChargeCreditCardProcessor implements Operations {
             e.printStackTrace();
         }
 
+        final Gson gson = new Gson();
+
         for(CreditCardInformation creditInfo : creditCardInformations) {
+
+            final CreditCardInformation.Builder creditCardInformationToBeAdded = CreditCardInformation.Builder.create(creditInfo);
 
             final String firstName = creditInfo.getFirstName();
             final String amount = creditInfo.getAmount();
             final String limit = creditInfo.getLimit();
+            final String error = creditInfo.getError();
 
-            if(creditCardInformation.getFirstName().equals(firstName)) {
+            if(creditCardInformationToBeCompared.getFirstName().equals(firstName)) {
 
-                if(creditInfo.getError() ==null) {
+                if(error==null) {
 
                     final Integer limitValue = Integer.valueOf(limit.substring(1));
                     Integer amountValue = Integer.valueOf(amount.substring(1));
-                    final Integer amountToBeCharged = Integer.valueOf(creditCardInformation.getAmount().substring(1));
+                    final Integer amountToBeCharged = Integer.valueOf(creditCardInformationToBeCompared.getAmount().substring(1));
 
                     amountValue = amountValue + amountToBeCharged;
-                    if (amountValue < limitValue) {
+                    if (amountValue <= limitValue) {
 
-                        creditInfo.setAmount(String.valueOf("$" + amountValue));
+                        creditCardInformationToBeAdded.withAmount(String.valueOf("$" + amountValue));
                     }
                 }
             }
+
             try {
-                dataWriter.addToFile(gson.toJson(creditInfo));
+                dataWriter.writeToStorage(gson.toJson(creditCardInformationToBeAdded.build()));
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -8,37 +8,37 @@ import com.google.gson.Gson;
 import java.io.IOException;
 
 /**
+ * Processor to add the credit card amount after the transaction is done.
  * @author Ritesh Dalvi
  **/
 
-class AddCreditCardProcessor implements Operations {
-
-    private static Gson gson = new Gson();
+public class AddCreditCardProcessor implements Operation {
 
     @Override
-    public void process(final String[] contents) throws IOException {
+    public void operate(final String[] contents) throws IOException {
 
         final DataWriter dataWriter = DataWriter.create();
 
         final String creditCardNumber = contents[2];
 
+        final Gson gson = new Gson();
+
         if(!ValidateCreditCard.doesCreditCardExist(creditCardNumber)) {
 
-            final CreditCardInformation creditCardInformation = new CreditCardInformation();
-
-            creditCardInformation.setFirstName(contents[1]);
-            creditCardInformation.setCreditNumber(contents[2]);
+            final CreditCardInformation.Builder creditCardInformationBuilder = CreditCardInformation.Builder.create().withFirstName(contents[1])
+                                                                                .withCreditNumber(creditCardNumber);
 
             if(ValidateCreditCard.IsCreditCardLuhn10(creditCardNumber)) {
-                creditCardInformation.setLimit(contents[3]);
-                creditCardInformation.setAmount("$0");
+                creditCardInformationBuilder.withLimit(contents[3]);
+                creditCardInformationBuilder.withAmount("$0");
             }else {
-                creditCardInformation.setError("error");
+                creditCardInformationBuilder.withError("error");
             }
 
+           final CreditCardInformation creditCardInformation = creditCardInformationBuilder.build();
             String creditInfo = gson.toJson(creditCardInformation);
 
-            dataWriter.addToFile(creditInfo);
+            dataWriter.writeToStorage(creditInfo);
         }
     }
 }

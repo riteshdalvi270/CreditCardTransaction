@@ -10,19 +10,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Reader to retriever data from the file.
  * @author Ritesh Dalvi
  **/
 public class DataReader {
 
+    /**
+     * Creates an instance of {@link DataReader}.
+     * @return non-null instance of {@link DataReader}.
+     */
     public static DataReader create() {
 
         return new DataReader();
     }
 
+    /**
+     * private to avoid direct instantiation.
+     */
     private DataReader() {
 
     }
 
+    /**
+     * Retrieves credit information from the file.
+     * @return non-null,possibly empty List of  {@link CreditCardInformation}.
+     * @throws IOException IOException if fails to read the file or error while reading the file.
+     * @throws JSONException JSONException if fails while reading the JSON objects.
+     */
     public List<CreditCardInformation> readFromStorage() throws IOException, JSONException {
 
         FileReader fileReader = null;
@@ -47,16 +61,11 @@ public class DataReader {
                 final String jsonAmount = JSONAssistant.getAmount(jsonObject,"amount");
                 final String jsonError = JSONAssistant.getError(jsonObject, "error");
 
-                final CreditCardInformation newCreditCardInformartion = new CreditCardInformation();
-                newCreditCardInformartion.setFirstName(jsonFirstName);
-                newCreditCardInformartion.setCreditNumber(jsonCreditNumber);
-                newCreditCardInformartion.setLimit(jsonLimit);
-                newCreditCardInformartion.setAmount(jsonAmount);
-                newCreditCardInformartion.setError(jsonError);
+                final CreditCardInformation newCreditCardInformartion = CreditCardInformation.Builder.create().withFirstName(jsonFirstName).
+                        withCreditNumber(jsonCreditNumber).withLimit(jsonLimit).withAmount(jsonAmount).withError(jsonError).build();
 
                 newCreditCardInformations.add(newCreditCardInformartion);
             }
-
         }finally {
 
             if(bufferedReader!=null) {
